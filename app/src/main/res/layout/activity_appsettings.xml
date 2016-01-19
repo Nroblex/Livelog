@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <PreferenceCategory android:title="@string/inst_server_profile" >
+        <EditTextPreference
+            android:title="@string/inst_server_ip"
+            android:summary="@string/inst_server_name_summary"
+            android:key="instServerIp"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/inst_server_port" >
+        <EditTextPreference
+            android:title="@string/inst_server_port"
+            android:summary="@string/inst_server_port_summary"
+            android:key="instServerPort"/>
+
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/inst_save_db_title" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="instSaveDB"
+            android:summary="@string/inst_save_db_summary"
+            android:title="@string/inst_save_db" >
+        </CheckBoxPreference>
+
+
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/inst_send_live_title" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="instSendLive"
+            android:summary="@string/inst_send_live_summary"
+            android:title="@string/inst_send_live" >
+        </CheckBoxPreference>
+
+
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/inst_use_bt_title" >
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="instUseBT"
+            android:summary="@string/inst_use_bt_summary"
+            android:title="@string/inst_use_bt" >
+        </CheckBoxPreference>
+        
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

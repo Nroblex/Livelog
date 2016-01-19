@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="syncFrequency">
+        <item name="1">Once a day</item>
+        <item name="7">Once a week</item>
+        <item name="3">Once a year</item>
+        <item name="0">Never (Update maually)</item>
+    </string-array>
+    <string-array name="syncFrequencyValues">
+        <item name="1">1</item>
+        <item name="7">7</item>
+        <item name="30">30</item>
+        <item name="0">0</item>
+    </string-array>
+    <color name="bgColor">#040404</color>
+    <color name="bgColorGreen">#006200</color>
+    <color name="colorMx">#A52A2A</color>
+    <color name="txColor">#FFFF00</color>
+    <color name="white">#FFFFFF</color>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="font_size_larger">35dp</dimen>
+    <dimen name="font_size_medium">20dp</dimen>
+    <string name="AvgSpeed">Med.hast</string>
+    <string name="Distance">Sträcka</string>
+    <string name="Duration">Duration</string>
+    <string name="Longitud">Longitud</string>
+    <string name="MaxSpeed">Max Hast</string>
+    <string name="Minutes">Tid.Min</string>
+    <string name="Pulse">Puls</string>
+    <string name="SatteliteCount">Sats:</string>
+    <string name="Speed">Hast</string>
+    <string name="Tidigare_Pass">Pass</string>
+    <string name="TimeDuration">elapsed</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">livelog</string>
+    <string name="ble_not_supported">BLE lågenergi BlueTooth stöds inte!</string>
+    <string name="export">Exportera</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="inst_save_db">Spara till lokal databas</string>
+    <string name="inst_save_db_summary">För att kunna visa statistik på telefonen</string>
+    <string name="inst_save_db_title">Spara data på telefonen</string>
+    <string name="inst_send_live">Skicka livedata</string>
+    <string name="inst_send_live_summary">Skicka kontinuerligt realtidsdata från telefonens GPS</string>
+    <string name="inst_send_live_title">Skicka data i realtid</string>
+    <string name="inst_server_ip">Server Ip</string>
+    <string name="inst_server_name_summary">Skriv in ServerIP</string>
+    <string name="inst_server_port">Anslutningsport</string>
+    <string name="inst_server_port_summary">Ange port att ansluta socket på</string>
+    <string name="inst_server_profile">Server Profile</string>
+    <string name="inst_use_bt">Använd puls?</string>
+    <string name="inst_use_bt_summary">Om puls skall kunna användas vid träningen</string>
+    <string name="inst_use_bt_title">Använd BlueTooth för PULS</string>
+    <string name="installningar">Inställningar</string>
+    <string name="latitud">Latitud</string>
+    <string name="menu_settings">Settings</string>
+    <string name="pref_send_report">Send crash reports</string>
+    <string name="pref_send_report_summary">Helps to fix bugs</string>
+    <string name="pref_sync_frequency">Sync frequency</string>
+    <string name="pref_sync_frequency_summary">Set the sync frequency</string>
+    <string name="pref_update_setting">Update Settings</string>
+    <string name="pref_user_name">Set username</string>
+    <string name="pref_user_name_summary">Set your username</string>
+    <string name="pref_user_profile">User Profile</string>
+    <string name="size"/>
+    <string name="srvIp">IP:</string>
+    <string name="title_activity_main">MainActivity</string>
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+</resources>

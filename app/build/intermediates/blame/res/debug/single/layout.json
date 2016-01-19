@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/layout/activity_main.xml",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/layout/activity_main.xml"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/layout/history.xml",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/layout/history.xml"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/layout/passes.xml",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/layout/passes.xml"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/layout/settingsxml.xml",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/layout/settingsxml.xml"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/layout/activity_appsettings.xml",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/layout/activity_appsettings.xml"
+    }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-mdpi-v4/ic_connected.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-mdpi/ic_connected.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-mdpi-v4/startgps.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-mdpi/startgps.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-mdpi-v4/exit.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-mdpi/exit.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-mdpi-v4/ic_launcher.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-mdpi-v4/stop.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-mdpi/stop.png"
+    }
+]

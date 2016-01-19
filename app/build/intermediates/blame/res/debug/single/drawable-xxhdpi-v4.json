@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4/ic_connected.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xxhdpi/ic_connected.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4/startgps.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xxhdpi/startgps.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4/ic_launcher.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4/connected.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xxhdpi/connected.png"
+    }
+]
