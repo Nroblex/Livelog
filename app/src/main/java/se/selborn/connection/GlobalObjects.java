@@ -10,7 +10,12 @@ public class GlobalObjects {
 	private static Thread _connectorThread = null;
 	private static Connector _connectorObject = null;	
 	private final AtomicBoolean started = new AtomicBoolean(false);
-	
+
+	private static long firstTimePoint;
+    private static long currentTimePoint;
+
+
+
 	public static Connector getConnector() {
 		
 		if (_connectorObject == null){

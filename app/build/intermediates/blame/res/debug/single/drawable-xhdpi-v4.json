@@ -1,7 +1,15 @@
 [
     {
-        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_connected.png",
-        "source": "/home/ueh093/code/Livelog/app/src/main/res/drawable-xhdpi/ic_connected.png"
+        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
+        "source": "/home/ueh093/code/Livelog/app/src/main/res/drawable-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_connected.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xhdpi/ic_connected.png"
+    },
+    {
+        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/connected.png",
+        "source": "/home/ueh093/code/Livelog/app/src/main/res/drawable-xhdpi/connected.png"
     },
     {
         "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/startgps.png",
@@ -12,23 +20,31 @@
         "source": "/home/ueh093/code/Livelog/app/src/main/res/drawable-xhdpi/startgps.png"
     },
     {
-        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/connected.png",
-        "source": "/home/ueh093/code/Livelog/app/src/main/res/drawable-xhdpi/connected.png"
+        "merged": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_connected.png",
+        "source": "/home/anders/code/Livelog/app/src/main/res/drawable-xhdpi/ic_connected.png"
     },
     {
-        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_connected.png",
-        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xhdpi/ic_connected.png"
+        "merged": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
+        "source": "/home/anders/code/Livelog/app/src/main/res/drawable-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
-        "source": "/home/ueh093/code/Livelog/app/src/main/res/drawable-xhdpi/ic_launcher.png"
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_connected.png",
+        "source": "/home/ueh093/code/Livelog/app/src/main/res/drawable-xhdpi/ic_connected.png"
     },
     {
         "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/connected.png",
         "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xhdpi/connected.png"
     },
     {
-        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
-        "source": "/home/anders/code/Livetrack/app/src/main/res/drawable-xhdpi/ic_launcher.png"
+        "merged": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/connected.png",
+        "source": "/home/anders/code/Livelog/app/src/main/res/drawable-xhdpi/connected.png"
+    },
+    {
+        "merged": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/startgps.png",
+        "source": "/home/anders/code/Livelog/app/src/main/res/drawable-xhdpi/startgps.png"
     }
 ]

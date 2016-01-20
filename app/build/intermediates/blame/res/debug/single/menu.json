@@ -1,11 +1,19 @@
 [
     {
-        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/menu/main.xml",
-        "source": "/home/ueh093/code/Livelog/app/src/main/res/menu/main.xml"
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/menu/main.xml",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/menu/main.xml"
     },
     {
         "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/menu/appsettings.xml",
         "source": "/home/ueh093/code/Livelog/app/src/main/res/menu/appsettings.xml"
+    },
+    {
+        "merged": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/menu/main.xml",
+        "source": "/home/anders/code/Livelog/app/src/main/res/menu/main.xml"
+    },
+    {
+        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/menu/settingsxml.xml",
+        "source": "/home/anders/code/Livetrack/app/src/main/res/menu/settingsxml.xml"
     },
     {
         "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/menu/settingsxml.xml",
@@ -16,11 +24,15 @@
         "source": "/home/anders/code/Livetrack/app/src/main/res/menu/appsettings.xml"
     },
     {
-        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/menu/settingsxml.xml",
-        "source": "/home/anders/code/Livetrack/app/src/main/res/menu/settingsxml.xml"
+        "merged": "/home/ueh093/code/Livelog/app/build/intermediates/res/merged/debug/menu/main.xml",
+        "source": "/home/ueh093/code/Livelog/app/src/main/res/menu/main.xml"
     },
     {
-        "merged": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/menu/main.xml",
-        "source": "/home/anders/code/Livetrack/app/src/main/res/menu/main.xml"
+        "merged": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/menu/settingsxml.xml",
+        "source": "/home/anders/code/Livelog/app/src/main/res/menu/settingsxml.xml"
+    },
+    {
+        "merged": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/menu/appsettings.xml",
+        "source": "/home/anders/code/Livelog/app/src/main/res/menu/appsettings.xml"
     }
 ]

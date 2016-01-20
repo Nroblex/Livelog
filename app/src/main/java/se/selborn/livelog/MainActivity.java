@@ -10,6 +10,7 @@ import se.selborn.gps.GpsEngine;
 import se.selborn.gps.GpsMock;
 import se.selborn.storage.DbStorage;
 import android.app.Activity;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,6 +48,7 @@ public class MainActivity extends Activity {
 	private static final int RESULT_SETTINGS = 1;
 	
 	private IntentFilter intFilter = new IntentFilter();
+    private IntentFilter mockIntentFilter = new IntentFilter();
 	
 	private Location mCurrentLocation = null;
 	private ArrayList<Location> mLocations = new ArrayList<Location>(2);
@@ -57,11 +59,8 @@ public class MainActivity extends Activity {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			gpsEngine = null;
-            gpsMock=null;
-
 
 			Log.e(TAG, "onServiceDisconnected_GPS");
-            Log.e(TAG, "onServiceDisconnected_GPS_MOCK");
 		}
 		
 		@Override
@@ -69,13 +68,37 @@ public class MainActivity extends Activity {
 			
 			GpsEngine.LocalBinder binder = (GpsEngine.LocalBinder) service;
 			gpsEngine = binder.getService();
-			
 			Log.e(TAG, "onServiceConnected_GPS!");
+
 			
 		}
 	};
-	
-	
+
+    private ServiceConnection mockServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            GpsMock.LocalBinder binder = (GpsMock.LocalBinder) service;
+            gpsMock = binder.getService();
+            Log.e(TAG, "GPS_MOCK_CONNECTED!");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            gpsMock=null;
+            Log.e(TAG, "onServiceDisconnected_GPS_MOCK");
+        }
+    };
+
+    private BroadcastReceiver mockBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int calcValue = intent.getParcelableExtra("GPS_MOCK");
+
+            Log.e(TAG, "MOCK_RECIEVER_VALUE: " + calcValue );
+
+        }
+    };
+
 	//THIS IS the callback from the service! The LOCATION comes here!
 	private BroadcastReceiver mBroadcastReceivermBroadcastReceiver = new BroadcastReceiver() {
 		
@@ -88,29 +111,38 @@ public class MainActivity extends Activity {
 			
 			setSatteliteCounts(intent, mCurrentLocation == null ? false : true);
 			
-			int secsDiff = GlobalObjects.getSecondsDifference(mCurrentLocation.getTime(), new Date().getTime());
 
 
-			
+            if (mCurrentLocation != null){
+
+                int secsDiff = GlobalObjects.getSecondsDifference(mCurrentLocation.getTime(), new Date().getTime());
+                Log.e(TAG, "Timediff: " + secsDiff);
+
+                mLocations.add(mCurrentLocation);
+
+                if (mLocations.size() > 2 ){
+                    //Information to user!
+                    mInfoObject.setLocations(mLocations);
+                    setInformation(mInfoObject);
+
+                    if (mSaveLocalDatabase)
+                        DbStorage.savePosition(mCurrentLocation, GlobalObjects.applicationGuid.toString());
+
+                    while (mLocations.size() > 1) {
+                        mLocations.remove(mLocations.size() -1);
+                    }
+
+                    mLocations.add(mCurrentLocation);
+                }
+
+            }
+
+            /*
 			if (secsDiff < 15) {
-				mLocations.add(mCurrentLocation);
-				
-				if (mLocations.size() > 2 ){
-					
-					//Information to user!
-					mInfoObject.setLocations(mLocations);
-					setInformation(mInfoObject);
-					
-					if (mSaveLocalDatabase)
-						DbStorage.savePosition(mCurrentLocation, GlobalObjects.applicationGuid.toString());
-					
-					while (mLocations.size() > 1) {
-						mLocations.remove(mLocations.size() -1);
-					}
-					
-					mLocations.add(mCurrentLocation);
-				}
-			}			
+
+			}
+
+		    */
 			
 		}
 
@@ -135,10 +167,16 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.e(TAG, "StartingService...");
-		
+		Log.e(TAG, "StartingServices (GPS) and (MOCK)...");
+
+        Intent mockIntent = new Intent(this, GpsMock.class);
+        bindService(mockIntent, mockServiceConnection, BIND_AUTO_CREATE);
+
 		Intent intent = new Intent(this, GpsEngine.class);
 		bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+
+
+
 		
 	}
 	
@@ -150,6 +188,8 @@ public class MainActivity extends Activity {
 
 		final Intent intentGpsEngine = new Intent(this, GpsEngine.class);
 		//final Intent intentLiveLogmanager = new Intent (this, LiveLogManager.class);
+
+        final Intent intentMockGPS = new Intent(this, GpsMock.class);
 		
 		mDbStorage = new DbStorage(getApplicationContext());
 		
@@ -161,6 +201,9 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				startService(intentGpsEngine);
 				//startService(intentLiveLogmanager);
+
+                startService(intentMockGPS);
+
 			}
 		});
 
@@ -182,6 +225,9 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				stopService(intentGpsEngine); //stannar service
 				//stopService(intentLiveLogmanager);
+
+                stopService(intentMockGPS);
+
 				finish();
 			}
 		});
@@ -193,8 +239,11 @@ public class MainActivity extends Activity {
 		
 		intFilter.addAction("GPS_POS");
 		intFilter.addAction("ANDERS");
-		
+
+        mockIntentFilter.addAction("GPS_MOCK");
+
 		registerReceiver(mBroadcastReceivermBroadcastReceiver, intFilter);
+        registerReceiver(mockBroadcastReceiver, mockIntentFilter);
 		
 		
 	}
@@ -221,6 +270,8 @@ public class MainActivity extends Activity {
 
 		//Register the listener
 		registerReceiver(mBroadcastReceivermBroadcastReceiver, intFilter);
+
+        registerReceiver(mockBroadcastReceiver, mockIntentFilter);
 
 		parseServerSettings();
 		
@@ -262,6 +313,7 @@ public class MainActivity extends Activity {
 		double dSpeed = roundDoubleTo(info.getSpeed(), 10);
 		String speed = String.valueOf(dSpeed);
 		txSpeed.setText(speed + " km/h");
+
 		
 		//MAXSPEED
 		double mxSpeed = roundDoubleTo(info.getMaxSpeed(), 10);
@@ -398,6 +450,9 @@ public class MainActivity extends Activity {
 			//Unbind Services
 			unbindService(serviceConnection);
 			unregisterReceiver(mBroadcastReceivermBroadcastReceiver);
+
+            unbindService(mockServiceConnection);
+            unregisterReceiver(mockBroadcastReceiver);
 			
 		} catch (Exception ep) {
 			ep.printStackTrace();

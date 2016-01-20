@@ -35,9 +35,9 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 	
 	private Timer timer = new Timer();
 	
-	private int mSattelitesCount = 0, mSattelitesCountInFix = 0;
-	private float mAccuracy = 10; //Antal meter f�r fix
-	Location mLastKnownLocation = null;
+	private int sattelitesCount = 0, sattelitesCountInFix = 0;
+	private float mAccuracy = 10; //fixmeter
+	Location lastKnownLocation = null;
 	LocationManager locationManager;
 	
 	
@@ -58,15 +58,18 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 		Criteria criteria = new Criteria();
 		
 		String provider = locationManager.getBestProvider(criteria, false);
-		mLastKnownLocation = locationManager.getLastKnownLocation(provider);
+		lastKnownLocation = locationManager.getLastKnownLocation(provider);
 		
 		
-		if (mLastKnownLocation != null) {
-			onLocationChanged(mLastKnownLocation);
+		if (lastKnownLocation != null) {
+			onLocationChanged(lastKnownLocation);
 		}
 		
 		//Varannan sekund.
-		locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 2000, 2, this);
+		//locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 2000, 2, this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,2, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 2, this);
+
 		locationManager.addGpsStatusListener(this);
 		
 		
@@ -77,9 +80,7 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 				
 				//intentPosition.putExtra("BLABB", counter++);
 				//sendBroadcast(intentPosition);
-				
-				
-				String satCount = GlobalObjects.getSatteliteCountString(mSattelitesCount, mSattelitesCountInFix);
+				String satCount = GlobalObjects.getSatteliteCountString(sattelitesCount, sattelitesCountInFix);
 				GpsEngine.this.intentPosition.putExtra("SAT_COUNT", satCount);
 				sendBroadcast(GpsEngine.this.intentPosition);
 			}
@@ -170,16 +171,17 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 	public void onGpsStatusChanged(int event) {
 		if (locationManager == null) return;
 		
-		mSattelitesCount=0;mSattelitesCountInFix=0;
+		sattelitesCount =0;
+		sattelitesCountInFix =0;
 		
 		android.location.GpsStatus gpsStatus = locationManager.getGpsStatus(null);
 		if (gpsStatus == null) return;
 		
 		Iterable<GpsSatellite> gpsSattelites = gpsStatus.getSatellites();
 		for (GpsSatellite sats : gpsSattelites) {
-			mSattelitesCount++;
+			sattelitesCount++;
 			if (sats.usedInFix()){
-				mSattelitesCountInFix++;
+				sattelitesCountInFix++;
 			}
 		}
 		
