@@ -2,18 +2,18 @@
 <items version="2" >
 
     <item
+        jar="/home/ueh093/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.2/1f96456ca233dec780aa224bff076d8e8bca3908/gson-2.2.2.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1f96456ca233dec780aa224bff076d8e8bca3908">
+        <dex dex="/home/ueh093/code/Livelog/app/build/intermediates/pre-dexed/debug/gson-2.2.2_2684fe987f753c8518d7734cc867e75a7dabfc02.jar" />
+    </item>
+    <item
         jar="/opt/apps/android-sdk/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
         jumboMode="false"
         revision="23.0.2"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
-        <dex dex="/home/anders/code/Livetrack/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0_a9c9cf90a0095131ca5ce9513ac4cc4508b0cc68.jar" />
-    </item>
-    <item
-        jar="/home/anders/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.2/1f96456ca233dec780aa224bff076d8e8bca3908/gson-2.2.2.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="1f96456ca233dec780aa224bff076d8e8bca3908">
-        <dex dex="/home/anders/code/Livetrack/app/build/intermediates/pre-dexed/debug/gson-2.2.2_8b6168432cfe1656f94098ef57f30c35848a4d2d.jar" />
+        <dex dex="/home/ueh093/code/Livelog/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0_a9c9cf90a0095131ca5ce9513ac4cc4508b0cc68.jar" />
     </item>
 
 </items>

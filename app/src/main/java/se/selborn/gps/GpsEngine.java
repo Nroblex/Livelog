@@ -1,14 +1,11 @@
 package se.selborn.gps;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import se.selborn.connection.GlobalObjects;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -20,53 +17,48 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
-import android.widget.Toast;
 
 public class GpsEngine extends Service implements LocationListener, Listener {
 
-	private static String GPS_TAG="GPSENGINE";
+	private static String TAG ="GPSENGINE";
 	
 	public static final int MSG_REGISTER_CLIENT = 1;
 	public static final int MSG_UNREGISTER_CLIENT = 2;
 	public static final int MSG_SET_INT_VALUE = 3;
 	public static final int MSG_SET_STRING_VALUE = 4;
 	
-	private final IBinder mBinder = new LocalBinder();
-	final Intent in = new Intent("GPS_POS");
+	private final IBinder localBinder = new LocalBinder();
+	final Intent intentPosition = new Intent("GPS_POS");
 	
 	
 	private Timer timer = new Timer();
 	
 	private int mSattelitesCount = 0, mSattelitesCountInFix = 0;
-	private float mAccuracy = 10; //Antal meter för fix
+	private float mAccuracy = 10; //Antal meter fï¿½r fix
 	Location mLastKnownLocation = null;
-	LocationManager mLm ;
+	LocationManager locationManager;
 	
 	
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.e(GPS_TAG, "Executing onBind");
-		return mBinder;
+		Log.e(TAG, "Executing onBind");
+		return localBinder;
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
-		Log.e(GPS_TAG, "StartCommand: trying to start GPSReceiver");	
+		Log.e(TAG, "StartCommand: trying to start GPSReceiver");
 		
-		mLm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
 		Criteria criteria = new Criteria();
 		
-		String provider = mLm.getBestProvider(criteria, false);
-		mLastKnownLocation = mLm.getLastKnownLocation(provider);
+		String provider = locationManager.getBestProvider(criteria, false);
+		mLastKnownLocation = locationManager.getLastKnownLocation(provider);
 		
 		
 		if (mLastKnownLocation != null) {
@@ -74,8 +66,8 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 		}
 		
 		//Varannan sekund.
-		mLm.requestLocationUpdates(mLm.GPS_PROVIDER, 2000, 2, this);
-		mLm.addGpsStatusListener(this);
+		locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 2000, 2, this);
+		locationManager.addGpsStatusListener(this);
 		
 		
 		if (timer == null ) timer = new Timer();
@@ -83,13 +75,13 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 			@Override
 			public void run() {
 				
-				//in.putExtra("BLABB", counter++);
-				//sendBroadcast(in);
+				//intentPosition.putExtra("BLABB", counter++);
+				//sendBroadcast(intentPosition);
 				
 				
 				String satCount = GlobalObjects.getSatteliteCountString(mSattelitesCount, mSattelitesCountInFix);
-				in.putExtra("SAT_COUNT", satCount);
-				sendBroadcast(in);
+				GpsEngine.this.intentPosition.putExtra("SAT_COUNT", satCount);
+				sendBroadcast(GpsEngine.this.intentPosition);
 			}
 		}, new Date(), 1000L);
 		
@@ -99,7 +91,7 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 	@Override
 	public void onCreate() {
 		
-		Log.e(GPS_TAG, "OnCreate!!");
+		Log.e(TAG, "OnCreate!!");
 		
 		
 	}
@@ -107,12 +99,13 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.e(GPS_TAG, "Trying to shut down GPS Receiver");
+
+		Log.e(TAG, "Trying to shut down GPS Receiver");
 		
-		if (mLm != null) {
-			mLm.removeUpdates(this);
-			mLm.removeGpsStatusListener(this);
-			mLm = null;
+		if (locationManager != null) {
+			locationManager.removeUpdates(this);
+			locationManager.removeGpsStatusListener(this);
+			locationManager = null;
 		}
 	}
 
@@ -126,12 +119,12 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 	
 	public void stopRunningGps() {
 		
-		Log.e(GPS_TAG, "Trying to stop Running Gps");
+		Log.e(TAG, "Trying to stop Running Gps");
 		
-		if (mLm != null) {
-			mLm.removeUpdates(this);
-			mLm.removeGpsStatusListener(this);
-			mLm = null;
+		if (locationManager != null) {
+			locationManager.removeUpdates(this);
+			locationManager.removeGpsStatusListener(this);
+			locationManager = null;
 		}
 		
 		if (timer != null) { 
@@ -147,8 +140,8 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 		
 		//Sending positions if accuracy is fullfilled.
 		if (location.hasAccuracy() && mAccuracy < location.getAccuracy()) {
-			in.putExtra("POS", location);
-			sendBroadcast(in);
+			intentPosition.putExtra("POS", location);
+			sendBroadcast(intentPosition);
 		}
 		
 	}
@@ -156,13 +149,13 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
-		Log.e(GPS_TAG, "onProviderDisabled - gps turned off");
+		Log.e(TAG, "onProviderDisabled - gps turned off");
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-		Log.e(GPS_TAG, "onProviderDisabled - gps turned on");
+		Log.e(TAG, "onProviderDisabled - gps turned on");
 	}
 
 	
@@ -175,11 +168,11 @@ public class GpsEngine extends Service implements LocationListener, Listener {
 
 	@Override
 	public void onGpsStatusChanged(int event) {
-		if (mLm == null) return;
+		if (locationManager == null) return;
 		
 		mSattelitesCount=0;mSattelitesCountInFix=0;
 		
-		android.location.GpsStatus gpsStatus = mLm.getGpsStatus(null);
+		android.location.GpsStatus gpsStatus = locationManager.getGpsStatus(null);
 		if (gpsStatus == null) return;
 		
 		Iterable<GpsSatellite> gpsSattelites = gpsStatus.getSatellites();

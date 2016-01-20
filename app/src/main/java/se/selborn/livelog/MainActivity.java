@@ -1,14 +1,13 @@
 package se.selborn.livelog;
 
 import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import se.selborn.bt.BTScanner;
 import se.selborn.connection.GlobalObjects;
 import se.selborn.gps.GpsEngine;
+import se.selborn.gps.GpsMock;
 import se.selborn.storage.DbStorage;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -23,7 +22,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.storage.StorageManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -35,12 +33,14 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	private GpsEngine mGpsEngine = null;
+	private GpsEngine gpsEngine = null;
+    private GpsMock gpsMock=null;
+
 	private DbStorage mDbStorage = null;
 	private LiveLogManager mLiveLogManager = null;
 	private BTScanner mBtScanner = null;
 	
-	private String TAG_INFO = "ACTIVITY_INFO";
+	private String TAG = "ACTIVITY_INFO_MAIN";
 	
 	private boolean mbUseBT = false;
 	private boolean mSaveLocalDatabase = false;
@@ -52,21 +52,25 @@ public class MainActivity extends Activity {
 	private ArrayList<Location> mLocations = new ArrayList<Location>(2);
 	private InformationObject mInfoObject = new InformationObject();
 	
-	private ServiceConnection mConnection = new ServiceConnection() {
+	private ServiceConnection serviceConnection = new ServiceConnection() {
 		
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			mGpsEngine = null;
-			Log.e(TAG_INFO, "onServiceDisconnected");
+			gpsEngine = null;
+            gpsMock=null;
+
+
+			Log.e(TAG, "onServiceDisconnected_GPS");
+            Log.e(TAG, "onServiceDisconnected_GPS_MOCK");
 		}
 		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			
 			GpsEngine.LocalBinder binder = (GpsEngine.LocalBinder) service;
-			mGpsEngine = binder.getService();
+			gpsEngine = binder.getService();
 			
-			Log.e(TAG_INFO, "onServiceConnected!");
+			Log.e(TAG, "onServiceConnected_GPS!");
 			
 		}
 	};
@@ -78,13 +82,15 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			
-			//Log.e(TAG_INFO, "RECEVED in BroadCast!");
+			//Log.e(TAG, "RECEVED in BroadCast!");
 			mCurrentLocation = null;
 			mCurrentLocation  = (Location)intent.getParcelableExtra("POS");
 			
 			setSatteliteCounts(intent, mCurrentLocation == null ? false : true);
 			
 			int secsDiff = GlobalObjects.getSecondsDifference(mCurrentLocation.getTime(), new Date().getTime());
+
+
 			
 			if (secsDiff < 15) {
 				mLocations.add(mCurrentLocation);
@@ -129,10 +135,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.e(TAG_INFO, "StartingService...");
+		Log.e(TAG, "StartingService...");
 		
 		Intent intent = new Intent(this, GpsEngine.class);
-		bindService(intent, mConnection, BIND_AUTO_CREATE);
+		bindService(intent, serviceConnection, BIND_AUTO_CREATE);
 		
 	}
 	
@@ -165,7 +171,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				mGpsEngine.stopRunningGps();
+				gpsEngine.stopRunningGps();
 			}
 		});
 
@@ -275,7 +281,7 @@ public class MainActivity extends Activity {
 		String distance = String.valueOf(dist);
 		txDistance.setText(distance + " meter");
 		
-		Log.e(TAG_INFO, "setInformationTouser");
+		Log.e(TAG, "setInformationTouser");
 		//PULS
 		
 	}
@@ -390,7 +396,7 @@ public class MainActivity extends Activity {
 		try { 
 			
 			//Unbind Services
-			unbindService(mConnection);
+			unbindService(serviceConnection);
 			unregisterReceiver(mBroadcastReceivermBroadcastReceiver);
 			
 		} catch (Exception ep) {

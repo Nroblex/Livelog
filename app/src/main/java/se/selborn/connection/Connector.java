@@ -69,11 +69,8 @@ public class Connector implements Runnable {
 
 	
 	private boolean isSocketConnected() {
-		
 		if (_dataSocket == null){
-			
 			try {
-				
 				InetAddress addr = InetAddress.getByName(_serverIp);
 				_dataSocket = new Socket(addr, 12111);
 				
@@ -82,7 +79,7 @@ public class Connector implements Runnable {
 				e.printStackTrace();
 				return false;
 			} catch (IOException e) {
-				Log.e("SocketConnection", String.format("Kan inte ansluta socket på ip %s", _serverIp));
+				Log.e("SocketConnection", String.format("Cannot connect to server at ipaddress :  %s", _serverIp));
 				return false;
 			}
 

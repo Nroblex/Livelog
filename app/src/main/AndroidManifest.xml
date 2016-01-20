@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="23" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
     
     <application
         android:allowBackup="true"
@@ -35,11 +36,8 @@
         <activity android:name="PassesActivity"></activity>
         <activity android:name="UserSettings"></activity>
         <activity android:name="AppSettings"></activity>
-        
-        
-        <service
-            android:name="se.selborn.gps.GpsService"
-            />
+
+
         <service
             android:name="se.selborn.gps.GpsEngine"
              />

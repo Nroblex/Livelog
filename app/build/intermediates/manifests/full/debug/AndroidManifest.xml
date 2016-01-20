@@ -40,7 +40,6 @@
         <activity android:name="se.selborn.livelog.UserSettings" />
         <activity android:name="se.selborn.livelog.AppSettings" />
 
-        <service android:name="se.selborn.gps.GpsService" />
         <service android:name="se.selborn.gps.GpsEngine" />
     </application>
 
