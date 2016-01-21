@@ -41,7 +41,7 @@
         <service
             android:name="se.selborn.gps.GpsEngine"
              />
-        
+
     </application>
 
 </manifest>

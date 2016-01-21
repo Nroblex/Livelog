@@ -1,0 +1,7 @@
+*.log
+*.class
+.idea/workspace.xml
+*.bin
+*.lock
+*.jar
+*.dex

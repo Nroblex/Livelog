@@ -8,6 +8,8 @@ import se.selborn.bt.BTScanner;
 import se.selborn.connection.GlobalObjects;
 import se.selborn.gps.GpsEngine;
 import se.selborn.gps.GpsMock;
+import se.selborn.gps.Position;
+import se.selborn.poster.DoPost;
 import se.selborn.storage.DbStorage;
 import android.app.Activity;
 import android.app.Service;
@@ -21,8 +23,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -32,6 +36,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 public class MainActivity extends Activity {
 
 	private GpsEngine gpsEngine = null;
@@ -40,37 +46,39 @@ public class MainActivity extends Activity {
 	private DbStorage mDbStorage = null;
 	private LiveLogManager mLiveLogManager = null;
 	private BTScanner mBtScanner = null;
-	
+
 	private String TAG = "ACTIVITY_INFO_MAIN";
-	
+
 	private boolean mbUseBT = false;
 	private boolean mSaveLocalDatabase = false;
 	private static final int RESULT_SETTINGS = 1;
-	
+
 	private IntentFilter intFilter = new IntentFilter();
     private IntentFilter mockIntentFilter = new IntentFilter();
-	
+
 	private Location mCurrentLocation = null;
 	private ArrayList<Location> mLocations = new ArrayList<Location>(2);
 	private InformationObject mInfoObject = new InformationObject();
-	
+
+    DoPost poster = new DoPost();
+
 	private ServiceConnection serviceConnection = new ServiceConnection() {
-		
+
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			gpsEngine = null;
 
 			Log.e(TAG, "onServiceDisconnected_GPS");
 		}
-		
+
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			
+
 			GpsEngine.LocalBinder binder = (GpsEngine.LocalBinder) service;
 			gpsEngine = binder.getService();
 			Log.e(TAG, "onServiceConnected_GPS!");
 
-			
+
 		}
 	};
 
@@ -101,16 +109,16 @@ public class MainActivity extends Activity {
 
 	//THIS IS the callback from the service! The LOCATION comes here!
 	private BroadcastReceiver mBroadcastReceivermBroadcastReceiver = new BroadcastReceiver() {
-		
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			//Log.e(TAG, "RECEVED in BroadCast!");
 			mCurrentLocation = null;
 			mCurrentLocation  = (Location)intent.getParcelableExtra("POS");
-			
+
 			setSatteliteCounts(intent, mCurrentLocation == null ? false : true);
-			
+
 
 
             if (mCurrentLocation != null){
@@ -122,6 +130,10 @@ public class MainActivity extends Activity {
 
                 if (mLocations.size() > 2 ){
                     //Information to user!
+
+
+                    Log.e(TAG, "DID A POSTME!!");
+
                     mInfoObject.setLocations(mLocations);
                     setInformation(mInfoObject);
 
@@ -143,27 +155,27 @@ public class MainActivity extends Activity {
 			}
 
 		    */
-			
+
 		}
 
 		private void setSatteliteCounts(Intent intent, boolean hasFix) {
-			
+
 			String satCounts = intent.getStringExtra("SAT_COUNT");
 			TextView txSatCount = (TextView) findViewById(R.id.txSatteliteCount);
-			
+
 			if (hasFix)
 				txSatCount.setTextColor(Color.GREEN);
 			else
 				txSatCount.setTextColor(Color.WHITE);
-			
+
 			txSatCount.setText(satCounts);
-			
+
 		}
 
-		
+
 	};
-	
-	
+
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -177,10 +189,10 @@ public class MainActivity extends Activity {
 
 
 
-		
+
 	}
-	
-	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -190,10 +202,10 @@ public class MainActivity extends Activity {
 		//final Intent intentLiveLogmanager = new Intent (this, LiveLogManager.class);
 
         final Intent intentMockGPS = new Intent(this, GpsMock.class);
-		
+
 		mDbStorage = new DbStorage(getApplicationContext());
-		
-		
+
+
 		ImageButton btStart = (ImageButton) findViewById(R.id.StartGPS);
 		btStart.setOnClickListener(new View.OnClickListener() {
 
@@ -207,8 +219,8 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		
-		
+
+
 		ImageButton btStop = (ImageButton) findViewById(R.id.StopGPS);
 		btStop.setOnClickListener(new View.OnClickListener() {
 
@@ -232,11 +244,11 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		
-		
+
+
 		parseServerSettings();
-		
-		
+
+
 		intFilter.addAction("GPS_POS");
 		intFilter.addAction("ANDERS");
 
@@ -244,26 +256,26 @@ public class MainActivity extends Activity {
 
 		registerReceiver(mBroadcastReceivermBroadcastReceiver, intFilter);
         registerReceiver(mockBroadcastReceiver, mockIntentFilter);
-		
-		
+
+
 	}
-	
+
 	//Trying to start at BT instance
 	private void startBTInstance() {
 		if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
 			Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
+
 		mBtScanner = new BTScanner(this);
-		
+
 		if (!mBtScanner.isBTESupported()) {
 			Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
 			return;
 		}
 	}
 
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -274,10 +286,10 @@ public class MainActivity extends Activity {
         registerReceiver(mockBroadcastReceiver, mockIntentFilter);
 
 		parseServerSettings();
-		
+
 	}
-	
-	
+
+
 	@Override
 	protected void onSaveInstanceState(Bundle saveState) {
 		super.onSaveInstanceState(saveState);
@@ -292,7 +304,7 @@ public class MainActivity extends Activity {
 		TextView txMaxSpeed = (TextView) findViewById(R.id.txMaxSpeed);
 		TextView txDistance = (TextView) findViewById(R.id.txDistance);
 		TextView txTotMinutes = (TextView) findViewById(R.id.txMinutes);
-		
+
 		double lat = info.getLatitud();
 		double lon = info.getLongitud();
 
@@ -300,49 +312,49 @@ public class MainActivity extends Activity {
 		String dlat = df.format(lat);
 		String dLon = df.format(lon);
 
-		
+
 		//Setting Lat/Long
 		txLat.setText(dlat);
 		txLong.setText(dLon);
-		
-		
+
+
 		//Setting textBoxes
-		
-		
+
+
 		//SPEED
 		double dSpeed = roundDoubleTo(info.getSpeed(), 10);
 		String speed = String.valueOf(dSpeed);
 		txSpeed.setText(speed + " km/h");
 
-		
+
 		//MAXSPEED
 		double mxSpeed = roundDoubleTo(info.getMaxSpeed(), 10);
 		String maxSpeed = String.valueOf(mxSpeed);
 		txMaxSpeed.setText(maxSpeed + " km/h");
-		
+
 		//MEDELHAST 
-		
+
 		//TID.MIN
 		String totMinutes = String.valueOf(info.getTotMinutes());
 		txTotMinutes.setText(totMinutes + " minuter");
-		
+
 		//STRÄCKA (meter)
 		double dist = roundDoubleTo(info.getAccDistance(), 10);
-		
+
 		//String distance = String.valueOf(info.getAccDistance());
 		String distance = String.valueOf(dist);
 		txDistance.setText(distance + " meter");
-		
+
 		Log.e(TAG, "setInformationTouser");
 		//PULS
-		
+
 	}
 
 	//Funkar bara med 10, 100, 1000, 10000
 	private double roundDoubleTo(double dbValue, int noDecimals) {
 		return (double) Math.round(dbValue * noDecimals) / noDecimals;
 	}
-	
+
 	@Override
 	//
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -363,21 +375,21 @@ public class MainActivity extends Activity {
 		case R.id.menu_settings:
 			Intent ip = new Intent(this, UserSettings.class);
 			startActivityForResult(ip, RESULT_SETTINGS);
-			
+
 			return true;
 
 		case R.id.app_settings:
 			Intent ips = new Intent(this, AppSettings.class);
 			startActivityForResult(ips, 1);
-			
+
 		case R.id.app_export:
 			boolean isExported = mDbStorage.exportDBToStorageCard();
 			if (isExported)
 				Toast.makeText(getApplicationContext(), "Databas exporterades", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(getApplicationContext(), "Misslyckades att exportera databas", Toast.LENGTH_SHORT).show();
-				
-			
+
+
 		default:
 			return super.onOptionsItemSelected(item);
 
@@ -395,32 +407,32 @@ public class MainActivity extends Activity {
 	}
 
 	private void parseServerSettings() {
-		
+
 		SharedPreferences sharedPrfs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		StringBuilder bu = new StringBuilder();
 		bu.append("\nIP: ")
 				.append(sharedPrfs.getString("instServerIp", "NULL"));
-		
+
 		bu.append(" :")
 			.append(sharedPrfs.getString("instServerPort", "NULL"));
-		
+
 		mbUseBT = sharedPrfs.getBoolean("instUseBT", false);
 		mSaveLocalDatabase = sharedPrfs.getBoolean("instSaveDB", false);
-		
+
 		TextView ipSetting = (TextView) findViewById(R.id.txServerIp);
 		ipSetting.setText(bu.toString());
-		
-		
+
+
 		if (mbUseBT) {
 			startBTInstance();
 		}
-		
+
 		//GUID
 		if (GlobalObjects.applicationGuid == null) {
 			GlobalObjects.applicationGuid = java.util.UUID.randomUUID();
 		}
-		
+
 	}
 
 	private void showUserSettings() {
@@ -442,23 +454,23 @@ public class MainActivity extends Activity {
 
 	}
 
-	@Override 
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		try { 
-			
+		try {
+
 			//Unbind Services
 			unbindService(serviceConnection);
 			unregisterReceiver(mBroadcastReceivermBroadcastReceiver);
 
             unbindService(mockServiceConnection);
             unregisterReceiver(mockBroadcastReceiver);
-			
+
 		} catch (Exception ep) {
 			ep.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();

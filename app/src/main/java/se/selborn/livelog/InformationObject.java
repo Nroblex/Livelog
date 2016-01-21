@@ -37,7 +37,7 @@ public class InformationObject {
 		float distM = locations.get(locations.size() -1 ).distanceTo(locations.get(locations.size() -2));
 		
 		
-		//Min avstånd mellan punkterna.
+
 		if (distM > 5.0) {
 			_accDistanceMeters += distM;
 		}
