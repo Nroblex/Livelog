@@ -1,5 +1,11 @@
 package se.selborn.livelog;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.channels.AsynchronousCloseException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,11 +14,9 @@ import se.selborn.bt.BTScanner;
 import se.selborn.connection.GlobalObjects;
 import se.selborn.gps.GpsEngine;
 import se.selborn.gps.GpsMock;
-import se.selborn.gps.Position;
-import se.selborn.poster.DoPost;
+import se.selborn.gps.Postposition;
 import se.selborn.storage.DbStorage;
 import android.app.Activity;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,10 +27,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.Build;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -36,7 +41,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends Activity {
 
@@ -60,7 +72,7 @@ public class MainActivity extends Activity {
 	private ArrayList<Location> mLocations = new ArrayList<Location>(2);
 	private InformationObject mInfoObject = new InformationObject();
 
-    DoPost poster = new DoPost();
+
 
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -181,8 +193,8 @@ public class MainActivity extends Activity {
 		super.onStart();
 		Log.e(TAG, "StartingServices (GPS) and (MOCK)...");
 
-        Intent mockIntent = new Intent(this, GpsMock.class);
-        bindService(mockIntent, mockServiceConnection, BIND_AUTO_CREATE);
+        //Intent mockIntent = new Intent(this, GpsMock.class);
+        //bindService(mockIntent, mockServiceConnection, BIND_AUTO_CREATE);
 
 		Intent intent = new Intent(this, GpsEngine.class);
 		bindService(intent, serviceConnection, BIND_AUTO_CREATE);
@@ -214,7 +226,7 @@ public class MainActivity extends Activity {
 				startService(intentGpsEngine);
 				//startService(intentLiveLogmanager);
 
-                startService(intentMockGPS);
+                //startService(intentMockGPS);
 
 			}
 		});
@@ -233,16 +245,16 @@ public class MainActivity extends Activity {
 		ImageButton btExit = (ImageButton) findViewById(R.id.AppExit);
 		btExit.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				stopService(intentGpsEngine); //stannar service
-				//stopService(intentLiveLogmanager);
+            @Override
+            public void onClick(View v) {
+                stopService(intentGpsEngine); //stannar service
+                //stopService(intentLiveLogmanager);
 
-                stopService(intentMockGPS);
+                //stopService(intentMockGPS);
 
-				finish();
-			}
-		});
+                finish();
+            }
+        });
 
 
 
@@ -255,7 +267,7 @@ public class MainActivity extends Activity {
         mockIntentFilter.addAction("GPS_MOCK");
 
 		registerReceiver(mBroadcastReceivermBroadcastReceiver, intFilter);
-        registerReceiver(mockBroadcastReceiver, mockIntentFilter);
+        //registerReceiver(mockBroadcastReceiver, mockIntentFilter);
 
 
 	}
@@ -283,7 +295,7 @@ public class MainActivity extends Activity {
 		//Register the listener
 		registerReceiver(mBroadcastReceivermBroadcastReceiver, intFilter);
 
-        registerReceiver(mockBroadcastReceiver, mockIntentFilter);
+        //registerReceiver(mockBroadcastReceiver, mockIntentFilter);
 
 		parseServerSettings();
 
@@ -382,13 +394,21 @@ public class MainActivity extends Activity {
 			Intent ips = new Intent(this, AppSettings.class);
 			startActivityForResult(ips, 1);
 
+            return true;
+
 		case R.id.app_export:
-			boolean isExported = mDbStorage.exportDBToStorageCard();
+			//boolean isExported = mDbStorage.exportDBToStorageCard();
+
+            sendJson();
+
+            /*
 			if (isExported)
 				Toast.makeText(getApplicationContext(), "Databas exporterades", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(getApplicationContext(), "Misslyckades att exportera databas", Toast.LENGTH_SHORT).show();
 
+            */
+            return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
@@ -396,7 +416,13 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	@Override
+    //Just test!!
+    private void sendJson() {
+        new HttpAsyncTask().execute("http://131.116.79.250/post.php");
+        Toast.makeText(getApplicationContext(), "Har kört postjson", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
@@ -442,9 +468,9 @@ public class MainActivity extends Activity {
 		StringBuilder bu = new StringBuilder();
 
 		bu.append("\n Username: ").append(
-				sharedPrefs.getString("prefUsername", "NULL"));
+                sharedPrefs.getString("prefUsername", "NULL"));
 		bu.append("\n Send report ").append(
-				sharedPrefs.getBoolean("prefSendReport", false));
+                sharedPrefs.getBoolean("prefSendReport", false));
 		bu.append("\n Sync Frequency: ").append(
 				sharedPrefs.getString("prefSyncFrequency", "NULL"));
 
@@ -463,8 +489,8 @@ public class MainActivity extends Activity {
 			unbindService(serviceConnection);
 			unregisterReceiver(mBroadcastReceivermBroadcastReceiver);
 
-            unbindService(mockServiceConnection);
-            unregisterReceiver(mockBroadcastReceiver);
+            //unbindService(mockServiceConnection);
+            //unregisterReceiver(mockBroadcastReceiver);
 
 		} catch (Exception ep) {
 			ep.printStackTrace();
@@ -480,5 +506,142 @@ public class MainActivity extends Activity {
 	public void onStop() {
 		super.onStop();
 	}
+
+
+	public static String POSTMESSAGE(String url, Person person){
+		InputStream inputStream=null;
+		String result = "";
+
+		HttpClient httpClient=new DefaultHttpClient();
+
+		HttpPost httpPost = new HttpPost(url);
+
+		String json = "";
+
+		JSONObject jsonObject = new JSONObject();
+		try {
+
+			jsonObject.accumulate("name", String.valueOf(person.getName()));
+			jsonObject.accumulate("country",String.valueOf(person.getCountry()));
+            jsonObject.accumulate("twitter",String.valueOf(person.getTwitter()));
+
+
+			json=jsonObject.toString();
+
+			StringEntity se = new StringEntity(json);
+
+			httpPost.setHeader("Accept", "application/json");
+			httpPost.setHeader("Content-type", "application/json");
+
+			HttpResponse httpResponse = httpClient.execute(httpPost);
+
+			inputStream = httpResponse.getEntity().getContent();
+
+			if (inputStream != null){
+				result=convertInputStreamToString(inputStream);
+			} else {
+				result = "Did not Work!";
+			}
+
+
+
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+			return result;
+	}
+
+	private static String convertInputStreamToString(InputStream inputStream) {
+		BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+		String line = "";
+		String result = "";
+		try {
+			while((line = bufferedReader.readLine()) != null)
+                result += line;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()){
+            return true;
+        } else{
+            return false;
+        }
+
+    }
+
+	private class HttpAsyncTask extends AsyncTask<String, Void, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+
+			//Postposition postposition  =new Postposition();
+			//postposition.setLatitude(29.293929);
+			//postposition.setLongitude(11.20291);
+
+            Person person = new Person();
+            person.setName("Kalle");
+            person.setCountry("sweden");
+            person.setTwitter("Secret");
+
+            return POSTMESSAGE(params[0], person);
+
+		}
+
+        @Override
+        protected void onPostExecute(String result){
+            Toast.makeText(getBaseContext(), "Data was sent!", Toast.LENGTH_SHORT);
+        }
+	}
+
+    private class Person{
+        private String name;
+        private String country;
+        private String twitter;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
+
+        public String getTwitter() {
+            return twitter;
+        }
+
+        public void setTwitter(String twitter) {
+            this.twitter = twitter;
+        }
+    }
 
 }

@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/values-v14/values-v14.xml",
+        "outputFile": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/values-v14/values-v14.xml",
         "map": [
             {
                 "to": {
@@ -12,7 +12,7 @@
                     "endOffset": 201
                 },
                 "from": {
-                    "file": "/home/anders/code/Livelog/app/src/main/res/values-v14/styles.xml",
+                    "file": "/home/anders/code/Livetrack/app/src/main/res/values-v14/styles.xml",
                     "position": {
                         "startLine": 7,
                         "startColumn": 4,
@@ -52,7 +52,7 @@
         ]
     },
     {
-        "outputFile": "/home/anders/code/Livetrack/app/build/intermediates/res/merged/debug/values-v14/values-v14.xml",
+        "outputFile": "/home/anders/code/Livelog/app/build/intermediates/res/merged/debug/values-v14/values-v14.xml",
         "map": [
             {
                 "to": {
@@ -64,7 +64,7 @@
                     "endOffset": 201
                 },
                 "from": {
-                    "file": "/home/anders/code/Livetrack/app/src/main/res/values-v14/styles.xml",
+                    "file": "/home/anders/code/Livelog/app/src/main/res/values-v14/styles.xml",
                     "position": {
                         "startLine": 7,
                         "startColumn": 4,

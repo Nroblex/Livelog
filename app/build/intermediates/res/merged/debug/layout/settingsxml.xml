@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
  
-    <PreferenceCategory android:title="@string/pref_user_profile" >
+    <PreferenceCategory android:title="@string/pref_user_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
         <EditTextPreference
                 android:title="@string/pref_user_name"
                 android:summary="@string/pref_user_name_summary"
-                android:key="prefUsername"/>
+                android:key="prefUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </PreferenceCategory>
      
-    <PreferenceCategory android:title="@string/pref_update_setting" >
+    <PreferenceCategory android:title="@string/pref_update_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="prefSendReport"
             android:summary="@string/pref_send_report_summary"
-            android:title="@string/pref_send_report" >
+            android:title="@string/pref_send_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
         </CheckBoxPreference>
  
         <ListPreference
@@ -21,7 +31,9 @@
             android:entries="@array/syncFrequency"
             android:summary="@string/pref_sync_frequency_summary"
             android:entryValues="@array/syncFrequencyValues"
-            android:title="@string/pref_sync_frequency" />
+            android:title="@string/pref_sync_frequency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </PreferenceCategory>,
  
 </PreferenceScreen>
